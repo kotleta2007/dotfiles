@@ -31,6 +31,50 @@ fi
 echo "Copying SSH key to VPS (you'll be prompted for password)..."
 ssh-copy-id -p ${SSH_PORT} ${SSH_USER}@${VPS_HOST}
 
+# Add entry to SSH config
+echo ""
+read -p "Enter SSH config alias for this VPS (e.g., contabo, myserver): " SSH_ALIAS
+
+# Determine which identity file to use
+if [ -f ~/.ssh/id_ed25519 ]; then
+  IDENTITY_FILE="~/.ssh/id_ed25519"
+elif [ -f ~/.ssh/id_rsa ]; then
+  IDENTITY_FILE="~/.ssh/id_rsa"
+else
+  IDENTITY_FILE="~/.ssh/id_ed25519"  # Default, even if generating new
+fi
+
+# Create SSH config directory if it doesn't exist
+mkdir -p ~/.ssh
+
+# Create new entry in temporary file
+cat > ~/.ssh/config.tmp << EOF
+Host ${SSH_ALIAS}
+  User mark
+  HostName ${VPS_HOST}
+  IdentityFile ${IDENTITY_FILE}
+EOF
+
+# Add port if non-standard
+if [ "${SSH_PORT}" != "22" ]; then
+  echo "  Port ${SSH_PORT}" >> ~/.ssh/config.tmp
+fi
+
+# Add blank line separator
+echo "" >> ~/.ssh/config.tmp
+
+# Append existing config if it exists
+if [ -f ~/.ssh/config ]; then
+  cat ~/.ssh/config >> ~/.ssh/config.tmp
+fi
+
+# Replace original config
+mv ~/.ssh/config.tmp ~/.ssh/config
+chmod 600 ~/.ssh/config
+
+echo "Added SSH config entry for '${SSH_ALIAS}'"
+echo "You'll be able to connect with: ssh ${SSH_ALIAS}"
+
 echo ""
 echo "Copying setup files to VPS..."
 

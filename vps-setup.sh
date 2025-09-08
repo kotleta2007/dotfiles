@@ -61,8 +61,8 @@ sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnoster"/' /root/.zshrc
 echo 'export EDITOR=vim' >> /root/.zshrc
 chsh -s $(which zsh) root
 
-# Install Oh My Zsh for mark (yes, it needs separate installation per user)
-sudo -u mark sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+# Install Oh My Zsh for mark  
+sudo -u mark bash -c 'cd /home/mark && HOME=/home/mark sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended'
 sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnoster"/' /home/mark/.zshrc
 echo 'export EDITOR=nvim' >> /home/mark/.zshrc
 
@@ -94,9 +94,9 @@ else
   echo "Warning: tmux.conf file not found"
 fi
 
-# Install uv
+# Install uv system-wide
+export UV_INSTALL_DIR="/usr/local/bin"
 curl -LsSf https://astral.sh/uv/install.sh | sh
-mv /root/.cargo/bin/uv /usr/local/bin/
 
 # SSH keys for GitHub
 read -p "Generate SSH keys for GitHub? (y/n): " GEN_SSH
@@ -116,3 +116,4 @@ fi
 echo ""
 echo "Setup complete!"
 echo "Log out and back in as 'mark' to activate Zsh"
+
