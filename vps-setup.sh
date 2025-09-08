@@ -15,10 +15,20 @@ apt-get install -y mosh vim neovim zsh tmux ripgrep curl wget git sudo build-ess
 
 # Create user mark
 if ! id -u mark &>/dev/null; then
-    useradd -m -s /bin/bash mark
-    usermod -aG sudo mark
-    echo "Set password for user 'mark':"
-    passwd mark
+  useradd -m -s /bin/bash mark
+  usermod -aG sudo mark
+  echo "Set password for user 'mark':"
+  passwd mark
+fi
+
+# Copy SSH keys from root to mark
+if [ -f /root/.ssh/authorized_keys ]; then
+  mkdir -p /home/mark/.ssh
+  mv /root/.ssh/authorized_keys /home/mark/.ssh/
+  chmod 700 /home/mark/.ssh
+  chmod 600 /home/mark/.ssh/authorized_keys
+  chown -R mark:mark /home/mark/.ssh
+  echo "SSH keys moved to mark (root no longer has key access)"
 fi
 
 # Ask about additional users
