@@ -96,8 +96,10 @@ if [ -n "$FILES_TO_COPY" ]; then
     ssh -p ${SSH_PORT} ${SSH_USER}@${VPS_HOST} "chmod +x vps-setup.sh"
     
     echo ""
-    echo "Ready! Now SSH in and run the setup:"
+    echo "Ready! Now SSH (or mosh) in and run the setup:"
     echo "  ssh -p ${SSH_PORT} ${SSH_USER}@${VPS_HOST}"
+    echo "  or"
+    echo "  mosh ${SSH_ALIAS}"
     echo "  ./vps-setup.sh"
 else
     echo "Error: No files to copy. Make sure vps-setup.sh exists."
